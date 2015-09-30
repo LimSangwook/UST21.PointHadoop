@@ -34,6 +34,7 @@ public class RangeQuery extends BaseService {
 		m_indexDataMap = m_idxEngine.GetIndexData(m_pointName);
 		
 		ParseArgs(args);
+		PrintSetupInfo();
 		
 		// 검색에 필요한 Index찾기
 		ArrayList<Integer> findIndexList = GetFindRangeIndex();
@@ -47,7 +48,16 @@ public class RangeQuery extends BaseService {
 		System.out.println((endTime-startTime)/1000.0 +" 초 걸림");
 		return true;
 	}
-
+	
+	private void PrintSetupInfo() {
+		System.out.println();
+		System.out.println("### Setup Information ###");
+		System.out.println("PointSet : " + m_pointName);
+		System.out.println("Range("+ m_rangeRect.getX() + ", " + m_rangeRect.getY() 
+							+ " ~ " + (m_rangeRect.getX() + m_rangeRect.getWidth()) 
+							+ ", "  + (m_rangeRect.getY() + m_rangeRect.getHeight()));
+	}
+	
 	private IndexData GetStat(ArrayList<Integer> findIndexList) {
 		IndexData statData = new IndexData();
 		statData.offset = -1; // 쓰이지 않음으로...

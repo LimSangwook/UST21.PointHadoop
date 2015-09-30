@@ -1,16 +1,11 @@
 package USTPointService.Service;
 
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Set;
 import java.util.TreeMap;
 
 
 import Common.BasicInfo;
 import Common.IndexData;
-import Common.PointData;
 import USTPointService.GridIndexEngine.GridIndexEngine;
 
 public class KNN extends BaseService {
@@ -35,6 +30,7 @@ public class KNN extends BaseService {
 		m_indexDataMap = m_idxEngine.GetIndexData(m_pointName);
 		
 		ParseArgs(args);
+		PrintSetupInfo();
 		
 		long startTime = System.currentTimeMillis();
 
@@ -43,7 +39,12 @@ public class KNN extends BaseService {
 		return true;
 	}
 
-
+	private void PrintSetupInfo() {
+		System.out.println();
+		System.out.println("### Setup Information ###");
+		System.out.println("PointSet : " + m_pointName);
+		System.out.println("Point("+ m_point.getX() + ", " + m_point.getY() + ") Count : " + m_SearchNum);
+	}
 
 	private void ParseArgs(String[] args) {
 		m_point = new Point2D.Double(Double.parseDouble(args[1])
