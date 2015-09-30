@@ -1,5 +1,7 @@
 package USTPointService.GridIndexEngine;
 
+import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -20,6 +22,10 @@ import Common.Util;
 import Index.SplitHadoopFile;
 
 public class GridIndexEngine {
+	class XY {
+		int X;
+		int Y;
+	}
 	HashMap<String, BasicInfo> m_pointInfoMap = new HashMap<String, BasicInfo>();
 	HashMap<String, TreeMap<Integer, IndexData>> m_pointIndexMap = new HashMap<String, TreeMap<Integer, IndexData>>();
 	
@@ -189,16 +195,20 @@ public class GridIndexEngine {
 	
 	private boolean LoadInfo(String pointName) {
 		BasicInfo bi;
-		try {
-			bi = Util.GetBasicInfo(pointName);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
+
+		if (m_pointInfoMap.containsKey(pointName)) {
+			bi = m_pointInfoMap.get(pointName);
+		} else {
+			try {
+				bi = Util.GetBasicInfo(pointName);
+				m_pointInfoMap.put(pointName, bi);
+			} catch (IOException e) {
+				e.printStackTrace();
+				return false;
+			}
 		}
 
 		if (bi == null) return false;
-
-		m_pointInfoMap.put(pointName, bi);
 		System.out.println();
 		System.out.println("### " + pointName + " PointSet Information ###");
 		System.out.println(bi.toString());
