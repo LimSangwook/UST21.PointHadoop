@@ -15,8 +15,8 @@ public class PointMerger {
 	static int cnt = 0;
 	static int cntLine = 0;
 	public static void main(String []args) {
-		String FileListPath = "/home/iswook/PointList/2014";
-		String outPutFile = "/home/iswook/PointList/2014_Point.xyz";
+		String FileListPath = "/home/iswook/PointList/3.5000_SUPPRESS_SO/ALL_LL";
+		String outPutFile = "/home/iswook/PointList/3.5000_SUPPRESS_SO/ALL_LL.xyz";
 		
 		
 		MergeFileList(FileListPath, outPutFile);

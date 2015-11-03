@@ -9,9 +9,9 @@ import java.util.Set;
 
 public class Suppress {
 	public static void  main(String[] args) {
-		int rangeMeter = 2;
-		String inputFile = "/home/iswook/PointList/2014_3725102.xyz";
-		String outputFile = "/home/iswook/PointList/2014_3725102_"+rangeMeter+"m.xyz";
+		float rangeMeter = 2.0f;
+		String inputFile = "/home/iswook/PointList/강화도인근.xyz";
+		String outputFile = "/home/iswook/PointList/강화도인근"+"_"+rangeMeter+"m.xyz";
 		
 		HashMap<Long, Point3D> map = DoSuppress(inputFile, outputFile, rangeMeter);
 		WriteFile(outputFile, map);
@@ -50,7 +50,7 @@ public class Suppress {
 		
 	}
 
-	private static HashMap<Long, Point3D> DoSuppress(String inputFile, String outputFile, int rangeMeter) {
+	private static HashMap<Long, Point3D> DoSuppress(String inputFile, String outputFile, float rangeMeter) {
 
 		HashMap<Long, Point3D> point3DMap = new HashMap<Long, Point3D>(); 
 		FileReader in = null;
@@ -85,7 +85,7 @@ public class Suppress {
 					maxY = Math.max(maxY, pt3d.GetY());
 					Long key = GetKey(pt3d, rangeMeter);
 					if (point3DMap.containsKey(key) == true) {
-						if (point3DMap.get(key).GetZ() > pt3d.GetZ()) {
+						if (point3DMap.get(key).GetZ() >= pt3d.GetZ()) {
 							point3DMap.put(key, pt3d);
 						}
 					} else {
@@ -114,7 +114,7 @@ public class Suppress {
 		return point3DMap;
 	}
 
-	private static Long GetKey(Point3D pt3d, int rangeMeter) {
+	private static Long GetKey(Point3D pt3d, float rangeMeter) {
 		int x = (int)pt3d.GetX();
 		int y = (int)pt3d.GetY();
 		Long key =(int)(x/rangeMeter) * 1000000000L + (int)(y/rangeMeter);
