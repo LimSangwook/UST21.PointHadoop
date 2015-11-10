@@ -15,9 +15,8 @@ public class PointMerger {
 	static int cnt = 0;
 	static int cntLine = 0;
 	public static void main(String []args) {
-		String FileListPath = "/home/iswook/PointList/3.5000_SUPPRESS_SO/ALL_LL";
-		String outPutFile = "/home/iswook/PointList/3.5000_SUPPRESS_SO/ALL_LL.xyz";
-		
+		String FileListPath = "/home/iswook/PointList/3. 5000_SUPPRESS_SO/2013_UTM/";
+		String outPutFile = "/home/iswook/PointList/3. 5000_SUPPRESS_SO/2013_UTM_2.xyz";
 		
 		MergeFileList(FileListPath, outPutFile);
 		System.out.println("cntLine : " + cntLine);
@@ -26,10 +25,12 @@ public class PointMerger {
 	private static boolean MergeFileList(String fileListPath, String outPutFile) {
 		File dir = new File(fileListPath);
 		File[] fileList = dir.listFiles();
-		
 		for (File file : fileList) {
 			if(file.isFile()) {
 				try {
+					if (file.getCanonicalPath().contains(".bak") == true ) {
+						continue;
+					}
 					System.out.println(++cnt + " File : " + file.getCanonicalPath().toString());
 				} catch (IOException e) {
 					// TODO Auto-generated catch block

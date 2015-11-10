@@ -4,21 +4,21 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Set;
+import java.util.TreeMap;
 
 public class Suppress {
 	public static void  main(String[] args) {
-		float rangeMeter = 2.0f;
-		String inputFile = "/home/iswook/PointList/강화도인근.xyz";
-		String outputFile = "/home/iswook/PointList/강화도인근"+"_"+rangeMeter+"m.xyz";
+		float rangeMeter = 10.0f;
+		String inputFile =  "/media/iswook/SEAFLOORUSB/2013_land_1109.xyz";
+		String outputFile = "/media/iswook/SEAFLOORUSB/2013_land_1109"+"_"+rangeMeter+"m.xyz";
 		
-		HashMap<Long, Point3D> map = DoSuppress(inputFile, outputFile, rangeMeter);
+		TreeMap<Long, Point3D> map = DoSuppress(inputFile, outputFile, rangeMeter);
 		WriteFile(outputFile, map);
 		System.out.println("cnt : " + map.size());
 	}
 
-	private static void WriteFile(String outputFile, HashMap<Long, Point3D> map) {
+	private static void WriteFile(String outputFile, TreeMap<Long, Point3D> map) {
 		FileWriter out = null;
 		BufferedWriter writer = null;
 		try {
@@ -31,7 +31,11 @@ public class Suppress {
 		Set<Long> keySet = map.keySet();
 		for (Long key : keySet) {
 			try {
-				writer.write(map.get(key).toString());
+				Point3D pt3D = map.get(key);
+				if (((int)pt3D.GetX()) == 755810 && ((int)pt3D.GetY()) == 4154277) {
+					System.out.println("@@@" + pt3D);
+				}
+				writer.write(pt3D.toString());
 				writer.newLine();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -50,9 +54,9 @@ public class Suppress {
 		
 	}
 
-	private static HashMap<Long, Point3D> DoSuppress(String inputFile, String outputFile, float rangeMeter) {
+	private static TreeMap<Long, Point3D> DoSuppress(String inputFile, String outputFile, float rangeMeter) {
 
-		HashMap<Long, Point3D> point3DMap = new HashMap<Long, Point3D>(); 
+		TreeMap<Long, Point3D> point3DMap = new TreeMap<Long, Point3D>(); 
 		FileReader in = null;
 		BufferedReader reader = null;
 		int cntLine = 0;
@@ -79,6 +83,9 @@ public class Suppress {
 				cntLine ++;
 				pt3d = Point3D.Create(str);
 				if (pt3d != null) {
+					if (((int)pt3d.GetX()) == 754732 && ((int)pt3d.GetY()) == 4154340) {
+						System.out.println("@@@" + pt3d);
+					}
 					minX = Math.min(minX, pt3d.GetX());
 					minY = Math.min(minY, pt3d.GetY());
 					maxX = Math.max(maxX, pt3d.GetX());

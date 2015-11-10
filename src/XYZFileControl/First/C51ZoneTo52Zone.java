@@ -13,8 +13,8 @@ import gov.nasa.worldwind.geom.coords.UTMCoord;
 
 public class C51ZoneTo52Zone {
 	public static void main(String []args) {
-		String pointFile = "/home/iswook/PointList/372403098.xyz";
-		String saveFile = "/home/iswook/PointList/372403098_UTM52.xyz";
+		String pointFile = "/home/iswook/PointList/7. 25000납품원도수심_UTF8/2011_25000.xyz";
+		String saveFile = "/home/iswook/PointList/7. 25000납품원도수심_UTF8/2011_25000_UTM52.xyz";
 		WritePointList(pointFile, saveFile);
 	}
 

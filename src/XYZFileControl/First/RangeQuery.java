@@ -16,24 +16,24 @@ import gov.nasa.worldwind.geom.Angle;
 public class RangeQuery {
 	public static void main(String []args) {
 //		// 연도별파일을 25000 도엽으로 나누기;
-//		GetYear25000Data(2013);
+//		GetYear25000Data(2012);
 		
 		// 영역 추출
 		GetRangeData();
 	}
 	
 	private static void GetRangeData() {
-		String pointFile = "/home/iswook/PointList/1. 연도별 통합/2013_Point.xyz";
-		String rangeFile = "/home/iswook/PointList/강화도인근.xyz";
-		Path2D.Double rect25000 = Get25000Range("강화도 인근");
+		String pointFile = "/home/iswook/PointList/3. 5000_SUPPRESS_SO/2011_UTM.xyz";
+		String rangeFile = "/home/iswook/PointList/Test1_5000_SUPPRESS.xyz";
+		Path2D.Double rect25000 = Get25000Range("Test");
 		ArrayList<Point3D> ptList = WritePointList(pointFile, rect25000, rangeFile);
 		System.out.println("Points : " + ptList.size());
 	}
 	
 	private static void GetYear25000Data(int YEAR) {
 		HashMap<Integer, Path2D> rectList = null;
-		String pointFile = "/home/iswook/PointList/1. 연도별 통합/2013_Point.xyz";
-		String rangeFilePath = "/home/iswook/PointList/2. 25000도엽원본/" + Integer.toString(YEAR)+"_";
+		String pointFile = "/home/iswook/PointList/2012_Point.xyz";
+		String rangeFilePath = "/home/iswook/PointList/25000/" + Integer.toString(YEAR)+"_";
 		
 		SurveyAreaManager areaMge = new SurveyAreaManager();
 		
@@ -127,7 +127,7 @@ public class RangeQuery {
 		FileWriter out = null;
 		BufferedWriter writer = null;
 		try {
-			out = new FileWriter(rangeFile);
+			out = new FileWriter(rangeFile, true);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -213,7 +213,15 @@ public class RangeQuery {
 			path.lineTo(268809.2718620563, 4184096.691344014);
 			path.lineTo(257798.11039035654, 4184413.305691137);
 			path.closePath();
-		}		
+		}	
+		if (id.equals("Test")) {
+			double range = 30;
+			path.moveTo(130082.47 - range, 4184030.1 - range);
+			path.lineTo(130082.47 + range, 4184030.1 - range);
+			path.lineTo(130082.47 + range, 4184030.1 + range) ;
+			path.lineTo(130082.47 - range , 4184030.1 + range);
+			path.closePath();
+		}
 		return path;
 	}
 }

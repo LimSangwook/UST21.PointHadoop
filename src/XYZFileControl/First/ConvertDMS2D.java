@@ -9,8 +9,8 @@ import java.io.IOException;
 public class ConvertDMS2D {
 	public static void main(String[] args) {
 		// 도-분-초 로되어있는것을 도+소숫점으로 표현한다.
-		String pointFile = "/home/iswook/PointList/이상체보고서_경위도_정리.xyz";
-		String saveFile = "/home/iswook/PointList/이상체보고서_경위도_정리"+"_LatLon.xyz";
+		String pointFile = "/home/iswook/PointList/25000납품_정리.xyz";
+		String saveFile = "/home/iswook/PointList/25000납품_정리"+"_LatLon.xyz";
 
 		DoConvertDMS2D(pointFile, saveFile);
 	}

@@ -9,7 +9,8 @@ import java.util.Set;
 
 public class PointInfo {
 	public static void main(String[] args) {
-		String pointFile = "/home/iswook/PointList/3.5000_SUPPRESS_SO/ALL_LL.xyz";
+		String pointFile = "/home/iswook/PointList/2011_5000-25000_Merge.xyz";
+//		String pointFile = "/home/iswook/PointList/7. 25000납품원도수심/2011/H37240842011_UTM.txt";
 		ShowPointInfo(pointFile);
 	}
 	
@@ -43,7 +44,7 @@ public class PointInfo {
 					maxX = Math.max(maxX, pt3d.GetX());
 					maxY = Math.max(maxY, pt3d.GetY());
 				} else {
-					System.out.println("ERR LoadPoint : " + str);
+					System.out.println(cntLine + " ERR LoadPoint : " + str);
 					errcnt++;
 				}
 			}

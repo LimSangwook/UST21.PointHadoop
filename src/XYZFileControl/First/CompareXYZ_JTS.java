@@ -7,33 +7,37 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
-public class CompareXYZ {
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.index.strtree.STRtree;
+
+public class CompareXYZ_JTS {
 	static public double CheckDistance = 3.0;
 	public static void main(String[] args) {
 		// PointFile을 작은 파일로 한다.
-		String pointFile = "/home/iswook/PointList/3. 5000_SUPPRESS_SO/2011_UTM.xyz";
-		String pointFile2 = "/home/iswook/PointList/7. 25000납품원도수심/2011_25000_UTM52.xyz";
-		String NewFileName = "/home/iswook/PointList/2011_5000-25000납품_비교.xyz";
+		String pointFile = "/home/iswook/PointList/3. 5000_SUPPRESS_SO/2013_UTM_2.5.xyz";
+		String pointFile2 = "/home/iswook/PointList/7. 25000납품원도수심/2013_25000.xyz";
+		String NewFileName = "/home/iswook/PointList/2013_5000-25000납품_비교_2.5.xyz";
 
 		// 베이스 좌표를 가져온다.
+		
 		System.out.println("Loading : " + pointFile);
 		ArrayList<Point3D>  ptList = LoadPoint(pointFile);
 		System.out.println(pointFile + "\t Load Completed");
 		System.out.println("\n");
+
 		System.out.println("Loading : " + pointFile2);
-		ArrayList<Point3D>  ptList2 = LoadPoint(pointFile2);
-		
-		System.out.println("\n"+pointFile + "\t Load Completed");
+		STRtree spIndex = CreateSPIndex(pointFile2);
+		System.out.println("\n"+pointFile + "\t Load Completed " + spIndex.size());
 	
-		ComparePointMem(ptList, ptList2, NewFileName);
-		
-//		ComparePoint(pointFile2, ptList, NewFileName);
+		ComparePoint(ptList, spIndex, NewFileName);
 
 		System.out.println("Points : " + ptList.size());
 	}
 	
-	private static void ComparePointMem(ArrayList<Point3D> ptList, ArrayList<Point3D> ptList2, String newFileName) {
+	private static void ComparePoint(ArrayList<Point3D> ptList, STRtree spIndex, String newFileName) {
 		FileWriter out = null;
 		BufferedWriter writer = null;
 		int cntLine = 0;
@@ -43,22 +47,25 @@ public class CompareXYZ {
 
 			Iterator<Point3D> pt3dIter1 = ptList.iterator();
 			while (pt3dIter1.hasNext()) {
+				cntLine ++;
 				Point3D pt1 = pt3dIter1.next();
-				
-				Iterator<Point3D> pt3dIter2 = ptList2.iterator();
-				while (pt3dIter2.hasNext()) {
-					Point3D pt2 = pt3dIter2.next();
+				Envelope e = new Envelope(pt1.GetX() - CheckDistance, pt1.GetX() + CheckDistance,
+						pt1.GetY() - CheckDistance, pt1.GetY() + CheckDistance);
+				@SuppressWarnings("unchecked")
+				List<Point3D> list = spIndex.query(e);
+				Iterator<Point3D> ptIter = list.iterator();
+				while (ptIter.hasNext()) {
+					Point3D pt2 = ptIter.next();
 					double distance = pt1.GetPoint2D().distance(pt2.GetPoint2D());
 					if (distance <= CheckDistance) {
+						System.out.println("CHeck cnt : " + (cntLine));
 						writer.write(pt1.GetSourceString() + "\t" + pt2.GetSourceString() + "\t" + String.format("%.2f", distance));
-//						System.out.println(pt1.GetSourceString() + "\t" + pt2.GetSourceString() + "\t" + String.format("%.2f", distance));
-						
 						writer.newLine();
-						continue;
+						break;
 					}
 				}
-				cntLine ++;
-				if (cntLine % 10000 == 0) {
+
+				if (cntLine % 1000000 == 0) {
 					System.out.println("cnt : " + (cntLine));
 				}
 			}
@@ -78,23 +85,18 @@ public class CompareXYZ {
 		return ;
 	}
 
-	private static void ComparePoint(String pointFile, ArrayList<Point3D> ptList, String newFileName) {
-		
+	
+	private static STRtree CreateSPIndex(String pointFile) {
+		STRtree spIndex = new STRtree();
 		FileReader in = null;
 		BufferedReader reader = null;
 		int cntLine = 0;
-		int errcnt = 0;
-
-		FileWriter out = null;
-		BufferedWriter writer = null;
-
-		ArrayList<Point3D> minPTList = new ArrayList<Point3D>();
-		for (int i = 0 ; i < ptList.size() ; i++) minPTList.add(null);
-		
+		double minX = 999999.0;
+		double minY = 9999999.0;
+		double maxX = 0;
+		double maxY = 0;
+		int dupcnt = 0;
 		try {
-			out = new FileWriter(newFileName);
-			writer = new BufferedWriter(out);
-
 			in = new FileReader(pointFile);
 			reader = new BufferedReader(in);
 			String str;
@@ -105,50 +107,38 @@ public class CompareXYZ {
 					break;
 				cntLine ++;
 				pt3d = Point3D.Create(str);
-				if (cntLine % 1000 == 0) {
-					System.out.println("cnt : " + (cntLine));
-				}
+				if (cntLine % 1000000 == 0 ) 
+					System.out.println("cnt : " + (cntLine));// + " \t pt3D : " + utm.toDMSString());
 				
 				if (pt3d != null) {
-					Iterator<Point3D> iter = ptList.iterator();
-					Point3D closedPT = null;
-					double closedPTDistance = 0.0;
-					while (iter.hasNext()) {
-						Point3D nowPT = iter.next();
-						if (closedPT == null) {
-							closedPT = nowPT;
-							closedPTDistance = pt3d.GetPoint2D().distance(closedPT.GetPoint2D());
-						} else {
-							double nowPTDistance = nowPT.GetPoint2D().distance(pt3d.GetPoint2D()); 
-							if (nowPTDistance < closedPTDistance) {
-								closedPT = nowPT;
-								closedPTDistance = nowPTDistance;
-							}
-						}
-					}
-					writer.write(pt3d.GetSourceString() + "\t" + closedPT.GetSourceString() + "\t" + String.format("%.2f", closedPTDistance));
-					writer.newLine();
+					minX = Math.min(minX, pt3d.GetX());
+					minY = Math.min(minY, pt3d.GetY());
+					maxX = Math.max(maxX, pt3d.GetX());
+					maxY = Math.max(maxY, pt3d.GetY());
+					Coordinate pt = new Coordinate(pt3d.GetX(), pt3d.GetY());
+					spIndex.insert(new Envelope(pt), pt3d);
 				} else {
-					System.out.println("Err2 : " + str);
+					System.out.println("Err : " + str);
 				}
 			}
+			System.out.println("minX : " + minX);
+			System.out.println("minY : " + minY);
+			System.out.println("maxX : " + maxX);
+			System.out.println("maxY : " + maxY);
 			System.out.println("Lines : " + cntLine);
-			System.out.println("errcnt : " + errcnt);
+			System.out.println("dupcnt : " + dupcnt);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			try {
 				in.close();
-				writer.flush();
-				out.flush();
-				out.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-		return ;
+		
+		return spIndex;
 	}
-	
 	private static ArrayList<Point3D> LoadPoint(String pointFile) {
 		ArrayList<Point3D> pointList = new ArrayList<Point3D>();
 		FileReader in = null;
@@ -188,6 +178,8 @@ public class CompareXYZ {
 			System.out.println("maxX : " + maxX);
 			System.out.println("maxY : " + maxY);
 			System.out.println("Lines : " + cntLine);
+			System.out.println("List.size : " + pointList.size());
+			
 			System.out.println("dupcnt : " + dupcnt);
 		} catch (Exception e) {
 			e.printStackTrace();

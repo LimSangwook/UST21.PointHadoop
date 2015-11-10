@@ -6,12 +6,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public class SurveyAreaManager {
-	private ArrayList<String> SurveyData = new ArrayList<String>(); //25000 도엽 좌표
-	SurveyAreaManager() {
+	public ArrayList<String> SurveyData = new ArrayList<String>(); //25000 도엽 좌표
+	public SurveyAreaManager() {
 		FillSurveyData();
 	}
 	
-	HashMap<Integer, Path2D> GetRectList(int year) {
+	public HashMap<Integer, Path2D> GetRectList(int year) {
 		HashMap<Integer, Path2D> rectList = new HashMap<Integer, Path2D>();
 		Iterator<String> iter = SurveyData.iterator();
 		while (iter.hasNext()) {
