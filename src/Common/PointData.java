@@ -12,6 +12,9 @@ public class PointData implements Writable {
 	float pZ;
 	
 	public PointData() {
+		pX = 0.0;
+		pY = 0.0;
+		pZ = 0.0f;
 	}
 	public PointData clone() {
 		PointData pt = new PointData(pX, pY, pZ);
@@ -52,7 +55,11 @@ public class PointData implements Writable {
 		arg0.writeFloat(pZ);
 	}
 	
+	public String GetXYString() {
+		String str = Double.toString(pX) + " " + Double.toString(pY);
+		return str;
+	}
 	public String toString() {
-		return Double.toString(pX) + " " + Double.toString(pY) + " " + Float.toString(pZ);
+		return String.format("%.3f",GetX()) + " " + String.format("%.3f",GetY()) + " " + String.format("%.3f", GetZ());	// 소수점 1자리 남기고 절사
 	}
 }

@@ -6,8 +6,8 @@ import java.io.IOException;
 import org.apache.hadoop.io.WritableComparable;
 
 public class PointKey implements WritableComparable<PointKey>{
-	private double pX;
-	private double pY;
+	protected double pX;
+	protected double pY;
 
 	public PointKey() {}
 	
